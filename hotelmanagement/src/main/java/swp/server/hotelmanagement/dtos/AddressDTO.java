@@ -4,17 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AddressDTO {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String avatar;
-    private String sex;
-    private String phoneNum;
-    private String address;
-    private int roleId;
+public class AddressDTO implements Serializable {
+    private int id;
+    private String street;
+    private String city;
+    private String State;
+    private String country;
+    private String postalCode;
 }
