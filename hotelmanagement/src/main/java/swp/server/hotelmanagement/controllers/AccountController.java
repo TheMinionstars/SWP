@@ -1,2 +1,4 @@
-package swp.server.hotelmanagement.controllers;public class AccountController {
+package swp.server.hotelmanagement.controllers;
+
+public class AccountController {
 }

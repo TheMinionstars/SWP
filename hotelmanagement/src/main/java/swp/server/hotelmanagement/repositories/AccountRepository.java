@@ -1,2 +1,4 @@
-package swp.server.hotelmanagement.repositories;public interface AccountRepository {
+package swp.server.hotelmanagement.repositories;
+
+public interface AccountRepository {
 }
