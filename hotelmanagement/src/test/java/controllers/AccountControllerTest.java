@@ -77,5 +77,15 @@ public class AccountControllerTest {
         assertThat(accountController.getAccountById(1)).isEqualTo(accountDTO1);
         assertThat(accountController.getAccountById(1).getEmail()).isEqualTo(accountDTO1.getEmail());
     }
-    
+
+    @Test
+    public void deleteTest(){
+        AccountDTO accountDTO1 = new AccountDTO("www", "ccc", "abc@gmail.com"
+                , null, "aaa", "Female", "12345622",
+                "DT", 3);
+        when(accountService.deleteAccount(1)).thenReturn(true);
+        assertThat(accountController.deleteAccount(1)).isEqualTo(true);
+        assertThat(accountController.deleteAccount(1));
+    }
+
 }
