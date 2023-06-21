@@ -30,6 +30,16 @@ public class AccountController {
         return accountService.createNewAccount(accountDTO);
     }
 
+    @PostMapping("/registerAccount")
+    public AccountDTO register(@RequestBody AccountDTO accountDTO){
+        return accountService.registerAccount(accountDTO);
+    }
+
+    @GetMapping("/account/{id}")
+    public AccountDTO getAccountById(@PathVariable(value = "id") int accountId) {
+        return accountService.getAccountById(accountId);
+    }
+
     @PutMapping("/account/changePassword/{id}")
     public String changePassword(@PathVariable(value = "id") int accountId, String password){
         return accountService.changePassword(accountId,password);
