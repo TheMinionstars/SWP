@@ -2,9 +2,11 @@ package swp.server.hotelmanagement.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import swp.server.hotelmanagement.dtos.AccountDTO;
 import swp.server.hotelmanagement.dtos.LoginDTO;
+import swp.server.hotelmanagement.jwts.JwtUtils;
 import swp.server.hotelmanagement.services.AccountService;
 import swp.server.hotelmanagement.services.ProfileService;
 
@@ -15,8 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AccountController {
+    private final JwtUtils jwtUtils;
     private  final AccountService accountService;
     private final ProfileService profileService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     @PostMapping("/login")
     public AccountDTO login(@RequestBody LoginDTO loginDTO){
         return accountService.login(loginDTO);
