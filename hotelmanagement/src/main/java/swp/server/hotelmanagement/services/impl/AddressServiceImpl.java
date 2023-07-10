@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
+
     @Override
     public List<AddressDTO> getAllAddress() {
         List<AddressEntity> addressEntities = addressRepository.findAll();

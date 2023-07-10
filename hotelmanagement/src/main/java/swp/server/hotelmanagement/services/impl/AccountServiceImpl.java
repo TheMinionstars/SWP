@@ -1,12 +1,14 @@
 package swp.server.hotelmanagement.services.impl;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swp.server.hotelmanagement.dtos.AccountDTO;
 import swp.server.hotelmanagement.dtos.LoginDTO;
 import swp.server.hotelmanagement.entities.AccountEntity;
 import swp.server.hotelmanagement.entities.ProfileEntity;
+import swp.server.hotelmanagement.jwts.AccountDetails;
 import swp.server.hotelmanagement.repositories.AccountRepository;
 import swp.server.hotelmanagement.repositories.RoleRepository;
 import swp.server.hotelmanagement.services.AccountService;
@@ -14,6 +16,7 @@ import swp.server.hotelmanagement.services.ProfileService;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -27,12 +30,14 @@ public class AccountServiceImpl implements AccountService {
         this.roleRepository = roleRepository;
         this.profileService = profileService;
     }
+
+
     @Override
     public List<AccountDTO> getAllAccounts() {
         List<AccountEntity> accountEntities = accountRepository.findAll();
         List<AccountDTO> accountDTOS = new ArrayList<>();
         accountEntities.stream().forEach(accountEntity -> {
-            AccountDTO accountDTO = new AccountDTO(accountEntity.getProfileEntity().getFirstName(),
+            AccountDTO accountDTO = new AccountDTO(accountEntity.getId(), accountEntity.getProfileEntity().getFirstName(),
                     accountEntity.getProfileEntity().getLastName(),
                     accountEntity.getEmail(),
                     accountEntity.getPassword(),
@@ -69,6 +74,8 @@ public class AccountServiceImpl implements AccountService {
             return null;
         }
     }
+
+
     @Override
     public AccountDTO getAccountById(int accountId) {
         try {
@@ -83,6 +90,7 @@ public class AccountServiceImpl implements AccountService {
             accountDTO.setRoleId(accountEntity.getRoleEntity().getId());
             accountDTO.setPassword(accountEntity.getPassword());
             accountDTO.setAddress(accountEntity.getProfileEntity().getAddress());
+            accountDTO.setId(accountId);
             return accountDTO;
         } catch (Exception e) {
             e.getMessage();
@@ -133,6 +141,7 @@ public class AccountServiceImpl implements AccountService {
                     findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
             if (accountEntity != null) {
                 AccountDTO accountDTO = new AccountDTO();
+                accountDTO.setId(accountEntity.getId());
                 accountDTO.setRoleId(accountEntity.getRoleEntity().getId());
                 accountDTO.setEmail(accountEntity.getEmail());
                 accountDTO.setPhoneNum(accountEntity.getPhone());
@@ -187,5 +196,11 @@ public class AccountServiceImpl implements AccountService {
             e.getMessage();
             return "can't not change password";
         }
+    }
+
+    @Override
+    public AccountDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+        AccountEntity accountEntity = accountRepository.findByEmail(email);
+        return AccountDetails.build(accountEntity);
     }
 }

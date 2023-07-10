@@ -2,6 +2,7 @@ package swp.server.hotelmanagement.services;
 
 import swp.server.hotelmanagement.dtos.AccountDTO;
 import swp.server.hotelmanagement.dtos.LoginDTO;
+import swp.server.hotelmanagement.jwts.AccountDetails;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ public interface AccountService {
     AccountDTO login(LoginDTO loginDTO);
     AccountDTO registerAccount(AccountDTO accountDTO);
     String changePassword(int accountId, String password);
+    AccountDetails loadUserByEmail(String username) ;
 }

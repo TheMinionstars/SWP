@@ -2,10 +2,16 @@ package swp.server.hotelmanagement.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import swp.server.hotelmanagement.dtos.AccountDTO;
 import swp.server.hotelmanagement.dtos.LoginDTO;
+import swp.server.hotelmanagement.jwts.AccountDetails;
+import swp.server.hotelmanagement.jwts.JwtResponse;
 import swp.server.hotelmanagement.jwts.JwtUtils;
 import swp.server.hotelmanagement.services.AccountService;
 import swp.server.hotelmanagement.services.ProfileService;
@@ -22,7 +28,21 @@ public class AccountController {
     private final ProfileService profileService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @PostMapping("/signIn")
+    public ResponseEntity<?> signIn(@RequestBody LoginDTO loginDTO) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
+        AccountDetails userDetails = (AccountDetails) authentication.getPrincipal();
+        JwtResponse jwtResponse = new JwtResponse();
+        jwtResponse.setAccessToken(jwt);
+        jwtResponse.setEmail(userDetails.getEmail());
+        jwtResponse.setUserId(userDetails.getAccountId());
+        jwtResponse.setRole(userDetails.getAuthority().getAuthority());
+        return ResponseEntity.ok(jwtResponse);
+    }
     @PostMapping("/login")
     public AccountDTO login(@RequestBody LoginDTO loginDTO){
         return accountService.login(loginDTO);
