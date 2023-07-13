@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import swp.server.hotelmanagement.entities.AccountEntity;
 import swp.server.hotelmanagement.jwts.AccountDetails;
 import swp.server.hotelmanagement.repositories.AccountRepository;
-
 @Service
 public class AccountDetailServiceImpl implements UserDetailsService {
     @Autowired

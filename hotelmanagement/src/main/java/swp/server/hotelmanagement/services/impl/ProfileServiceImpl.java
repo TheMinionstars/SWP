@@ -3,6 +3,7 @@ package swp.server.hotelmanagement.services.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import swp.server.hotelmanagement.dtos.AccountDTO;
+import swp.server.hotelmanagement.dtos.AccountRequest;
 import swp.server.hotelmanagement.entities.ProfileEntity;
 import swp.server.hotelmanagement.repositories.AccountRepository;
 import swp.server.hotelmanagement.repositories.ProfileRepository;
@@ -17,7 +18,6 @@ public class ProfileServiceImpl implements ProfileService {
     private final AccountService accountService;
     private final RoleRepository roleRepository;
     private final AccountRepository accountRepository;
-
     @Override
     public ProfileEntity profileById(int accountId) {
         System.out.println(accountId);
@@ -31,7 +31,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public int createNewProfile(AccountDTO accountDTO) {
+    public int createNewProfile(AccountRequest accountDTO) {
         try {
             ProfileEntity newProfileEntity = new ProfileEntity();
             newProfileEntity.setSex(accountDTO.getSex());

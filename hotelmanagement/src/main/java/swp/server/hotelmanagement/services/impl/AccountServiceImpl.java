@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import swp.server.hotelmanagement.dtos.AccountDTO;
+import swp.server.hotelmanagement.dtos.AccountRequest;
 import swp.server.hotelmanagement.dtos.LoginDTO;
 import swp.server.hotelmanagement.entities.AccountEntity;
 import swp.server.hotelmanagement.entities.ProfileEntity;
@@ -85,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
             accountDTO.setLastName(accountEntity.getProfileEntity().getLastName());
             accountDTO.setSex(accountEntity.getProfileEntity().getSex());
             accountDTO.setPhoneNum(accountEntity.getPhone());
-            accountDTO.setEmail(accountEntity.getPassword());
+            accountDTO.setEmail(accountEntity.getEmail());
             accountDTO.setAvatar(accountEntity.getProfileEntity().getAvatar());
             accountDTO.setRoleId(accountEntity.getRoleEntity().getId());
             accountDTO.setPassword(accountEntity.getPassword());
@@ -160,7 +161,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountDTO registerAccount(AccountDTO accountDTO) {
+    public AccountRequest registerAccount(AccountRequest accountDTO) {
         try {
             AccountEntity newAccountEntity = new AccountEntity();
             if (accountDTO.getEmail().isEmpty() == false) {
