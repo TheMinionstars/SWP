@@ -84,6 +84,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/service/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/rooms/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/room/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/blogs/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/blog/**").permitAll()
                 //permission of blog
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/blogs/**").hasAnyRole("Admin", "Staff", "Customer")
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/blog/**").hasAnyRole("Admin", "Staff", "Customer")
