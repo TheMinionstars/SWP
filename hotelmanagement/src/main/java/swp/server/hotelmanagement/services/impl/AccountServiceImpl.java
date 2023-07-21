@@ -17,6 +17,7 @@ import swp.server.hotelmanagement.services.ProfileService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -24,18 +25,16 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
 
-    private final ProfileService profileService;
 
-    public AccountServiceImpl(AccountRepository accountRepository, RoleRepository roleRepository, @Lazy ProfileService profileService) {
+    public AccountServiceImpl(AccountRepository accountRepository, RoleRepository roleRepository) {
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
-        this.profileService = profileService;
     }
 
 
     @Override
     public List<AccountDTO> getAllAccounts() {
-        List<AccountEntity> accountEntities = accountRepository.findAll();
+        List<AccountEntity> accountEntities = accountRepository.getAllAccounts();
         List<AccountDTO> accountDTOS = new ArrayList<>();
         accountEntities.stream().forEach(accountEntity -> {
             AccountDTO accountDTO = new AccountDTO(accountEntity.getId(), accountEntity.getProfileEntity().getFirstName(),
@@ -55,15 +54,28 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public AccountDTO createNewAccount(AccountDTO accountDTO) {
+        String regexPattern = "^(.+)@(\\S+)$";
+        Pattern pattern = Pattern.compile(regexPattern);
         try {
             if (!accountDTO.getEmail().isEmpty()) {
-                if (accountDTO.getEmail().matches("^(.+)@(\\S+)$")) {
+                if (pattern.matcher(accountDTO.getEmail()).matches()) {
                     if (!accountRepository.existsByEmail(accountDTO.getEmail())) {
                         AccountEntity accountEntity = new AccountEntity();
                         accountEntity.setRoleEntity(roleRepository.getOne(accountDTO.getRoleId()));
                         accountEntity.setEmail(accountDTO.getEmail());
                         accountEntity.setPassword(accountDTO.getPassword());
                         accountEntity.setPhone(accountDTO.getPhoneNum());
+                        //default soft delete status
+                        accountEntity.setIsDeleted((byte) 0);
+                        //set value to profile
+                        ProfileEntity profileEntity = new ProfileEntity(
+                                0, accountDTO.getFirstName(),
+                                accountDTO.getLastName(),
+                                accountDTO.getAddress(),
+                                accountDTO.getSex(),
+                                accountDTO.getAvatar(),
+                                (byte) 0);
+                        accountEntity.setProfileEntity(profileEntity);
                         accountRepository.save(accountEntity);
                         return accountDTO;
                     }
@@ -101,17 +113,45 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDTO updateAccount(int accountId, AccountDTO updateAccountDTO) {
+        String regexPattern = "^(.+)@(\\S+)$";
+        Pattern pattern = Pattern.compile(regexPattern);
         try {
             AccountEntity accountEntity = accountRepository.getOne(accountId);
             if (!updateAccountDTO.getEmail().isEmpty()) {
-                if (updateAccountDTO.getEmail().matches("^(.+)@(\\S+)$")) {
-                    accountEntity.setEmail(updateAccountDTO.getEmail());
+                //check email valid
+                if (pattern.matcher(updateAccountDTO.getEmail()).matches()) {
+                    //check email not duplicate
+                    if(!accountRepository.existsByEmail(updateAccountDTO.getEmail())){
+                        accountEntity.setEmail(updateAccountDTO.getEmail());
+                    }else {
+                        return null;
+                    }
                 }
             }
-            accountEntity.setEmail(updateAccountDTO.getEmail());
-            accountEntity.setPassword(updateAccountDTO.getPassword());
-            accountEntity.setPhone(updateAccountDTO.getPhoneNum());
-            accountEntity.setRoleEntity(roleRepository.getOne(updateAccountDTO.getRoleId()));
+            if(!updateAccountDTO.getPassword().isEmpty() && updateAccountDTO.getPassword() !=null){
+                accountEntity.setPassword(updateAccountDTO.getPassword());
+            }
+            if(!updateAccountDTO.getPhoneNum().isEmpty() && updateAccountDTO.getPhoneNum() !=null){
+                accountEntity.setPhone(updateAccountDTO.getPhoneNum());
+            }
+            if(updateAccountDTO.getRoleId() != 0){
+                accountEntity.setRoleEntity(roleRepository.getOne(updateAccountDTO.getRoleId()));
+            }
+            if(updateAccountDTO.getAvatar() != null && !updateAccountDTO.getAvatar().isEmpty()){
+                accountEntity.getProfileEntity().setAvatar(updateAccountDTO.getAvatar());
+            }
+            if(updateAccountDTO.getFirstName() != null && !updateAccountDTO.getFirstName().isEmpty()){
+                accountEntity.getProfileEntity().setFirstName(updateAccountDTO.getFirstName());
+            }
+            if(updateAccountDTO.getLastName() != null && !updateAccountDTO.getFirstName().isEmpty()){
+                accountEntity.getProfileEntity().setLastName(updateAccountDTO.getLastName());
+            }
+            if(updateAccountDTO.getSex() != null && !updateAccountDTO.getSex().isEmpty()){
+                accountEntity.getProfileEntity().setSex(updateAccountDTO.getSex());
+            }
+            if(updateAccountDTO.getAddress() != null && !updateAccountDTO.getAddress().isEmpty()){
+                accountEntity.getProfileEntity().setAddress(updateAccountDTO.getAddress());
+            }
             accountRepository.save(accountEntity);
             return updateAccountDTO;
         } catch (Exception e) {
@@ -125,7 +165,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             if (accountRepository.getOne(accountId) != null) {
                 AccountEntity accountEntity = accountRepository.getOne(accountId);
-                accountEntity.setIsDeleted((byte) 0);
+                accountEntity.setIsDeleted((byte) 1);
                 accountRepository.save(accountEntity);
                 return true;
             }
@@ -162,10 +202,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRequest registerAccount(AccountRequest accountDTO) {
+        String regexPattern = "^(.+)@(\\S+)$";
+        Pattern pattern = Pattern.compile(regexPattern);
         try {
             AccountEntity newAccountEntity = new AccountEntity();
             if (accountDTO.getEmail().isEmpty() == false) {
-                if (accountDTO.getEmail().matches("^(.+)@(\\S+)$")) {
+                if (pattern.matcher(accountDTO.getEmail()).matches()) {
                     if (!accountRepository.existsByEmail(accountDTO.getEmail())) {
                         // map to account entity
                         newAccountEntity.setEmail(accountDTO.getEmail());
@@ -173,8 +215,16 @@ public class AccountServiceImpl implements AccountService {
                         newAccountEntity.setPassword(accountDTO.getPassword());
                         // default role is customer
                         newAccountEntity.setRoleEntity(roleRepository.getOne(3));
-                        ProfileEntity profileEntity = profileService.profileById(profileService.createNewProfile(accountDTO));
-                        newAccountEntity.setProfileEntity(profileEntity);
+                        //default soft delete status
+                        newAccountEntity.setIsDeleted((byte) 0);
+                        //set value to profile
+                        ProfileEntity profileEntity = new ProfileEntity(
+                                0, accountDTO.getFirstName(),
+                                accountDTO.getLastName(),
+                                accountDTO.getAddress(),
+                                accountDTO.getSex(),
+                                accountDTO.getAvatar(),
+                                (byte) 0);
                         accountRepository.save(newAccountEntity);
                         return accountDTO;
                     }

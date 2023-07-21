@@ -15,8 +15,18 @@ public class AccountDetailServiceImpl implements UserDetailsService {
     private AccountRepository accountRepository;
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        AccountEntity accountEntity = accountRepository.findByEmail(s);
-        accountEntity.setPassword(new BCryptPasswordEncoder().encode(accountEntity.getPassword()));
-        return AccountDetails.build(accountEntity);
+        try {
+            AccountEntity accountEntity = accountRepository.findByEmail(s);
+            if (accountEntity != null) {
+                accountEntity.setPassword(new BCryptPasswordEncoder().encode(accountEntity.getPassword()));
+                return AccountDetails.build(accountEntity);
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
     }
 }
