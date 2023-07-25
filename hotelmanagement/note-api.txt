@@ -1,0 +1,59 @@
+Nếu trả về 1 repsonse chung theo pattern được
+{
+  code: number;
+
+  message: string;
+
+  data: Nullable<TData>;
+}
+
+
+API LOGIN
+req {
+  email
+  password
+}
+res {
+  data:{
+    access_token
+    refresh_token
+    userInfo
+  }
+  code: 200
+  message: "Đăng nhập thành công"
+}
+
+API Register
+req {
+  firstName
+  lastName
+  gender
+  email
+  phone
+  password
+  passwordConfirm
+}
+res {
+  code: 200
+  message: "Đăng kí thành công"
+}
+
+API Get Profile (Kèm JWT)
+req {}
+res {
+  data: {
+    userName
+    fullName
+    email
+    phone
+    avatar 
+    gender
+    address
+    role
+    status
+    createdAt
+    updatedAt
+  }        
+  code: 200
+  message: "Success"
+}
