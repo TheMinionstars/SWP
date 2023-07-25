@@ -1,11 +1,10 @@
-package controllers;
+package swp.server.hotelmanagement.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import swp.server.hotelmanagement.controllers.AccountController;
 import swp.server.hotelmanagement.dtos.AccountDTO;
 import swp.server.hotelmanagement.dtos.LoginDTO;
 import swp.server.hotelmanagement.services.AccountService;
@@ -23,10 +22,9 @@ public class AccountControllerTest {
     @Mock
     AccountService accountService;
 
-//    @Test
 //    public void loginTest() {
 //        LoginDTO loginDTO = new LoginDTO("abc@gmail.com", "123123");
-//        AccountDTO accountDTO = new AccountDTO("www", "ccc", "abc@gmail.com"
+//        AccountDTO accountDTO = new AccountDTO(1, "www", "ccc", "abc@gmail.com"
 //                , null, "aaa", "Female", "12345622",
 //                "DT", 3);
 //        when(accountService.login(loginDTO)).thenReturn(accountDTO);
@@ -49,8 +47,9 @@ public class AccountControllerTest {
         assertThat(accountController.getAllAccounts().size()).isEqualTo(2);
         assertThat(accountController.getAllAccounts().get(1)).isEqualTo(accountDTO2);
     }
+
     @Test
-    public void createNewAccountTest(){
+    public void createNewAccountTest() {
         AccountDTO accountDTO1 = new AccountDTO(1, "www", "ccc", "abc@gmail.com"
                 , null, "aaa", "Female", "12345622",
                 "DT", 3);
@@ -59,17 +58,19 @@ public class AccountControllerTest {
         assertThat(accountController.createNewAccount(accountDTO1).getEmail()).isEqualTo(accountDTO1.getEmail());
 
     }
+
     @Test
-    public void changePassword(){
+    public void changePassword() {
         AccountDTO accountDTO1 = new AccountDTO(1, "www", "ccc", "abc@gmail.com"
                 , null, "aaa", "Female", "12345622",
                 "DT", 3);
-        when(accountService.changePassword(1,"123456789")).thenReturn("change password successfully");
-        assertThat(accountController.changePassword(1,"123456789")).isEqualTo("change password successfully");
-        assertThat(accountController.changePassword(1,"123456789").length()).isGreaterThan(1);
+        when(accountService.changePassword(1, "123456789")).thenReturn("change password successfully");
+        assertThat(accountController.changePassword(1, "123456789")).isEqualTo("change password successfully");
+        assertThat(accountController.changePassword(1, "123456789").length()).isGreaterThan(1);
     }
+
     @Test
-    public void getByIdTest(){
+    public void getByIdTest() {
         AccountDTO accountDTO1 = new AccountDTO(1, "www", "ccc", "abc@gmail.com"
                 , null, "aaa", "Female", "12345622",
                 "DT", 3);
@@ -79,13 +80,9 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void deleteTest(){
-//        AccountDTO accountDTO1 = new AccountDTO("www", "ccc", "abc@gmail.com"
-//                , null, "aaa", "Female", "12345622",
-//                "DT", 3);
+    public void deleteAccountTest() {
         when(accountService.deleteAccount(1)).thenReturn(true);
-        assertThat(accountController.deleteAccount(1)).isEqualTo(true);
-        assertThat(accountController.deleteAccount(1));
+        assertThat(accountController.deleteAccount(1)).isTrue();
     }
 
 }

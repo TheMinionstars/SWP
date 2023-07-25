@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,5 +27,7 @@ public class RoomcategoryEntity {
     @Basic
     @Column(name = "Description", nullable = true, length = 255)
     private String description;
+    @OneToMany(mappedBy = "roomcategoryEntity")
+    private List<RoomEntity> roomEntityList;
 
 }

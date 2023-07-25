@@ -1,18 +1,17 @@
 package swp.server.hotelmanagement.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "service", schema = "swp_hotel_management", catalog = "")
+
 public class ServiceEntity {
     @Id
     @Column(name = "Id", nullable = false)
@@ -28,6 +27,6 @@ public class ServiceEntity {
     @Column(name = "price")
     private Double price;
 
-
-
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "bookingServiceDetailEntities")
+    private Set<BookingEntity> bookingEntities;
 }

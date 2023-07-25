@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "role", schema = "swp_hotel_management", catalog = "")
-@JsonIgnoreProperties("accountEntities")
 public class RoleEntity {
 
     @Id
@@ -22,9 +22,9 @@ public class RoleEntity {
     @Basic
     @Column(name = "Name", nullable = false, length = 255)
     private String name;
-    @OneToMany(mappedBy = "roleEntity")
-    @JsonIgnoreProperties("roleEntity")
-    private List<AccountEntity> accountEntities;
+//    @OneToMany(mappedBy = "roleEntity", fetch = FetchType.LAZY)
+//    private List<AccountEntity> accountEntities;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

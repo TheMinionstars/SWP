@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,12 +20,12 @@ public class FeedbackEntity {
     private int id;
     @Column(name = "comment")
     private String comment;
-    @Column(name= "rating")
+    @Column(name = "rating")
     private int rating;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "accountId", referencedColumnName = "Id")
-    AccountEntity accountEntity;
+    private AccountEntity accountEntity;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "roomId", referencedColumnName = "Id")
-    RoomEntity roomEntity;
+    private RoomEntity roomEntity;
 }
