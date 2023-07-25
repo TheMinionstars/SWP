@@ -36,7 +36,7 @@ public class ProfileEntity {
     @Basic
     @Column(name = "IsDeleted", nullable = true)
     private Byte isDeleted;
-    @OneToOne(mappedBy = "profileEntity")
-    private AccountEntity accountEntity;
+//    @OneToOne(mappedBy = "profileEntity",fetch = FetchType.LAZY)
+//    private AccountEntity accountEntity;
 
 }

@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AccountDTO {
-    private int id;
+public class AccountRequest {
     private String firstName;
     private String lastName;
     private String email;
@@ -17,7 +16,4 @@ public class AccountDTO {
     private String sex;
     private String phoneNum;
     private String address;
-    private int roleId;
-
-
 }
