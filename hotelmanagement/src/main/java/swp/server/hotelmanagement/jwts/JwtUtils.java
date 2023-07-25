@@ -15,13 +15,12 @@ import java.util.Date;
 @Component
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+
     @Value("${jwtSecret}")
     private String jwtSecret;
+
     @Value("${jwtExpirationMs}")
     private int jwtExpirationMs;
-    private Key key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-    }
 
     public String generateJwtToken(Authentication authentication) {
 
@@ -33,6 +32,10 @@ public class JwtUtils {
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private Key key() {
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
     public String getEmailFromJwtToken(String token) {
@@ -56,5 +59,4 @@ public class JwtUtils {
 
         return false;
     }
-
 }

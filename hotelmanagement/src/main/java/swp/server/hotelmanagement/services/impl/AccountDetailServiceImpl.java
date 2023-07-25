@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import swp.server.hotelmanagement.entities.AccountEntity;
 import swp.server.hotelmanagement.jwts.AccountDetails;
 import swp.server.hotelmanagement.repositories.AccountRepository;
+
 @Service
 public class AccountDetailServiceImpl implements UserDetailsService {
     @Autowired
     private AccountRepository accountRepository;
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         try {
@@ -29,4 +31,6 @@ public class AccountDetailServiceImpl implements UserDetailsService {
             return null;
         }
     }
+
+
 }

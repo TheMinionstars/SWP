@@ -10,6 +10,7 @@ import swp.server.hotelmanagement.entities.AccountEntity;
 
 import java.util.Collection;
 import java.util.Collections;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +30,7 @@ public class AccountDetails implements UserDetails {
         accountDetails.setAuthority(new SimpleGrantedAuthority(accountEntity.getRoleEntity().getName()));
         return accountDetails;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(this.authority);

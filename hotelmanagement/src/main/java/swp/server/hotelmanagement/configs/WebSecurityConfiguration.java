@@ -27,10 +27,12 @@ import swp.server.hotelmanagement.services.impl.AccountDetailServiceImpl;
         jsr250Enabled = true,
         prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
     @Autowired
     private AccountDetailServiceImpl accountDetailService;
     @Autowired
     private AuthEntryPointJwt authEntryPointJwt;
+
     @Bean
     public AuthTokenFilter authTokenFilter() {
         return new AuthTokenFilter();
@@ -62,6 +64,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/webjars/**");
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
@@ -79,7 +82,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js").permitAll()
                 .antMatchers("/hotel-server/api/v1/signIn").permitAll()
-                .antMatchers("/hotel-server/api/v1/registerAccount").permitAll()
+                .antMatchers(HttpMethod.POST,"/hotel-server/api/v1/registerAccount").permitAll()
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/services/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/service/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/rooms/**").permitAll()
@@ -129,6 +132,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/hotel-server/api/v1/account/changePassword/**").hasAnyRole("Admin", "Staff", "Customer")
                 .antMatchers(HttpMethod.POST, "/hotel-server/api/v1/account/**").hasAnyRole("Admin")
                 .antMatchers(HttpMethod.DELETE, "/hotel-server/api/v1/account/**").hasAnyRole("Admin")
+                //permission of payment
+                .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/payments/**").hasAnyRole("Admin", "Staff")
+                .antMatchers(HttpMethod.GET, "/hotel-server/api/v1/payment/**").hasAnyRole("Admin", "Staff")
                 .anyRequest().authenticated();
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

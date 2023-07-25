@@ -1,6 +1,5 @@
 package swp.server.hotelmanagement.services.impl;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,18 +12,18 @@ import swp.server.hotelmanagement.jwts.AccountDetails;
 import swp.server.hotelmanagement.repositories.AccountRepository;
 import swp.server.hotelmanagement.repositories.RoleRepository;
 import swp.server.hotelmanagement.services.AccountService;
-import swp.server.hotelmanagement.services.ProfileService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import static swp.server.hotelmanagement.services.impl.ProfileServiceImpl.getAccountDTO;
 
 
 @Service
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
-
 
     public AccountServiceImpl(AccountRepository accountRepository, RoleRepository roleRepository) {
         this.accountRepository = accountRepository;
@@ -118,13 +117,13 @@ public class AccountServiceImpl implements AccountService {
         try {
             AccountEntity accountEntity = accountRepository.getOne(accountId);
             if (!updateAccountDTO.getEmail().isEmpty()) {
-                //check email valid
+                //check email is valid
                 if (pattern.matcher(updateAccountDTO.getEmail()).matches()) {
-                    //check email not duplicate
+                    //check email is not duplicate
                     if(!accountRepository.existsByEmail(updateAccountDTO.getEmail())){
                         accountEntity.setEmail(updateAccountDTO.getEmail());
                     }else {
-                        return null;
+                            return null;
                     }
                 }
             }
@@ -137,23 +136,7 @@ public class AccountServiceImpl implements AccountService {
             if(updateAccountDTO.getRoleId() != 0){
                 accountEntity.setRoleEntity(roleRepository.getOne(updateAccountDTO.getRoleId()));
             }
-            if(updateAccountDTO.getAvatar() != null && !updateAccountDTO.getAvatar().isEmpty()){
-                accountEntity.getProfileEntity().setAvatar(updateAccountDTO.getAvatar());
-            }
-            if(updateAccountDTO.getFirstName() != null && !updateAccountDTO.getFirstName().isEmpty()){
-                accountEntity.getProfileEntity().setFirstName(updateAccountDTO.getFirstName());
-            }
-            if(updateAccountDTO.getLastName() != null && !updateAccountDTO.getFirstName().isEmpty()){
-                accountEntity.getProfileEntity().setLastName(updateAccountDTO.getLastName());
-            }
-            if(updateAccountDTO.getSex() != null && !updateAccountDTO.getSex().isEmpty()){
-                accountEntity.getProfileEntity().setSex(updateAccountDTO.getSex());
-            }
-            if(updateAccountDTO.getAddress() != null && !updateAccountDTO.getAddress().isEmpty()){
-                accountEntity.getProfileEntity().setAddress(updateAccountDTO.getAddress());
-            }
-            accountRepository.save(accountEntity);
-            return updateAccountDTO;
+            return getAccountDTO(updateAccountDTO, accountEntity, accountRepository);
         } catch (Exception e) {
             e.getMessage();
         }
@@ -225,6 +208,7 @@ public class AccountServiceImpl implements AccountService {
                                 accountDTO.getSex(),
                                 accountDTO.getAvatar(),
                                 (byte) 0);
+                        newAccountEntity.setProfileEntity(profileEntity);
                         accountRepository.save(newAccountEntity);
                         return accountDTO;
                     }
@@ -243,7 +227,7 @@ public class AccountServiceImpl implements AccountService {
             accountEntity.setPassword(password);
             accountRepository.save(accountEntity);
             return "change password successfully";
-        }catch (Exception e){
+        } catch (Exception e) {
             e.getMessage();
             return "can't not change password";
         }

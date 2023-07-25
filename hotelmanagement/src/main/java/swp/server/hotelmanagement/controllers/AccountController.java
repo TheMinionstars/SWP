@@ -11,24 +11,26 @@ import org.springframework.web.bind.annotation.*;
 import swp.server.hotelmanagement.dtos.AccountDTO;
 import swp.server.hotelmanagement.dtos.AccountRequest;
 import swp.server.hotelmanagement.dtos.LoginDTO;
-import swp.server.hotelmanagement.jwts.AccountDetails;
 import swp.server.hotelmanagement.jwts.JwtResponse;
 import swp.server.hotelmanagement.jwts.JwtUtils;
 import swp.server.hotelmanagement.services.AccountService;
 import swp.server.hotelmanagement.services.ProfileService;
+import swp.server.hotelmanagement.jwts.AccountDetails;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("hotel-server/api/v1")
+@RequestMapping("/hotel-server/api/v1")
 @AllArgsConstructor
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AccountController {
+
     private final JwtUtils jwtUtils;
-    private  final AccountService accountService;
+    private final AccountService accountService;
     private final ProfileService profileService;
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @PostMapping("/signIn")
     public ResponseEntity<?> signIn(@RequestBody LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
@@ -44,8 +46,9 @@ public class AccountController {
         jwtResponse.setRole(userDetails.getAuthority().getAuthority());
         return ResponseEntity.ok(jwtResponse);
     }
+
 //    @PostMapping("/login")
-//    public AccountDTO login(@RequestBody LoginDTO loginDTO){
+//    public AccountDTO login(@RequestBody LoginDTO loginDTO) {
 //        return accountService.login(loginDTO);
 //    }
 
@@ -60,8 +63,9 @@ public class AccountController {
     }
 
     @PostMapping("/registerAccount")
-    public AccountRequest register(@RequestBody AccountRequest accountDTO){
+    public AccountRequest register(@RequestBody AccountRequest accountDTO) {
         return accountService.registerAccount(accountDTO);
+
     }
 
     @GetMapping("/account/{id}")
@@ -70,25 +74,23 @@ public class AccountController {
     }
 
     @PutMapping("/account/changePassword/{id}")
-    public String changePassword(@PathVariable(value = "id") int accountId, String password){
-        return accountService.changePassword(accountId,password);
+    public String changePassword(@PathVariable(value = "id") int accountId, String password) {
+        return accountService.changePassword(accountId, password);
     }
 
     @PutMapping("/account/{id}")
     public AccountDTO updateAccount(@PathVariable(value = "id") int accountId,
-                                    @RequestBody AccountDTO updatedAccountDTO){
-        return accountService.updateAccount(accountId,updatedAccountDTO);
+                                    @RequestBody AccountDTO updatedAccountDTO) {
+        return accountService.updateAccount(accountId, updatedAccountDTO);
     }
 
-    @PutMapping("/account/updateProfile")
-    public AccountDTO updateAccount(AccountDTO accountDTO){
-        return profileService.updateProfile(accountDTO);
+    @PutMapping("/account/updateProfile/{id}")
+    public AccountDTO updateProfile(@PathVariable(value = "id") int accountId,@RequestBody AccountDTO accountDTO) {
+        return profileService.updateProfile(accountId,accountDTO);
     }
 
     @DeleteMapping("/account/{id}")
-    public boolean deleteAccount(@PathVariable(value = "id") int accountId){
+    public boolean deleteAccount(@PathVariable(value = "id") int accountId) {
         return accountService.deleteAccount(accountId);
     }
-
-
 }
