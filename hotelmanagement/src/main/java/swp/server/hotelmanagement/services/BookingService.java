@@ -12,6 +12,6 @@ public interface BookingService {
     BookingDTO updateBooking(BookingDTO bookingDTO);
 
     BookingDTO createNewBooking(BookingDTO bookingDTO);
-
+    List<BookingDTO> getBookingByAccount(int accountId);
     boolean deleteBooking(int bookingId);
 }

@@ -11,4 +11,6 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<BookingEntity, Integer> {
     @Query(nativeQuery = true, value = "SELECT * FROM swp_hotel_management.booking where is_delete IS NOT TRUE")
     List<BookingEntity> findBookingEntities();
+    @Query(value = "SELECT b from BookingEntity b where b.accountEntity.id=:id")
+    List<BookingEntity>  getBookingByAccountEntity(int id);
 }
